@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { fetcher } from "@/api/fetcher";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState({
     isValid: false,
@@ -13,6 +16,10 @@ const Register = () => {
     value: "",
   });
   const [isTerms, setIsTerms] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem("email");
+  }, []);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const EMAIL_REGEX =
@@ -61,7 +68,26 @@ const Register = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.length || !email.isValid || !password.isSame || !isTerms) return;
-    console.log("submit", name, email, password, isTerms);
+    // console.log("submit", name, email, password, isTerms);
+    fetcher
+      .post(`/auth/register`, {
+        name,
+        email: email.value,
+        password: password.value,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data === "User created") {
+          localStorage.setItem("email", email.value);
+          router.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        if (err.response.data === "User already exists")
+          alert("User already exists");
+        else alert("server error");
+      });
   };
 
   return (
@@ -278,9 +304,9 @@ const Register = () => {
                     password.isSame &&
                     email.isValid &&
                     isTerms
-                      ? "border-slate-700 bg-slate-700 hover:bg-slate-800 hover:border-slate-800"
-                      : "opacity-50 cursor-not-allowed bg-transparent"
-                  } inline-block w-full px-6 py-3 mt-6 mb-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md `}
+                      ? "border-slate-700 bg-slate-700 hover:bg-slate-800 hover:border-slate-800 cursor-pointer"
+                      : "opacity-50 cursor-not-allowed bg-transparent text-slate-600"
+                  } inline-block w-full px-6 py-3 mt-6 mb-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md `}
                 >
                   Sign up
                 </button>
