@@ -12,9 +12,9 @@ import ContentFilterBtn from "@/components/contentFilterBtn";
 export default function Home() {
   const router = useRouter();
   const [dataList, setDataList] = useState([]);
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState(false);
 
-  useEffect(() => {
+  const confirmUser = async () => {
     const email = localStorage.getItem("email");
     if (email) {
       fetcher
@@ -28,19 +28,9 @@ export default function Home() {
           router.push("/auth/login");
         });
     }
-    console.log("test home");
-  }, []);
+  };
 
-  useEffect(() => {
-    // fetcher.post(`/content/create`, {
-    //   title: "test",
-    //   thumbnail: "test",
-    //   content:
-    //     "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.\nlorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.\n",
-    //   date: new Date(),
-    //   writer: localStorage.getItem("email"),
-    // });
-
+  const getContents = async () => {
     fetcher
       .get(`/content`)
       .then((res) => {
@@ -49,22 +39,46 @@ export default function Home() {
       .catch((err) => {
         alert("Internal Server Error");
       });
+  };
+
+  useEffect(() => {
+    confirmUser();
+    getContents();
+    console.log("test home");
   }, []);
+
+  // fetcher.post(`/content/create`, {
+  //   title: "test",
+  //   thumbnail: "test",
+  //   content:
+  //     "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.\nlorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.\n",
+  //   date: new Date(),
+  //   writer: localStorage.getItem("email"),
+  // });
 
   return (
     <>
       <Topbar />
 
-      <main className="w-full px-[200px]">
+      <main className="w-full h-full px-[200px] pb-10">
         <div className="flex flex-row ">carousel div</div>
-        <div className="flex flex-row gap-8 my-12">
+        <div className="flex flex-row gap-8 my-12 font-semibold pl-4">
+          필터:
           <ContentFilterBtn
-            props={{ filter: "All", content: "All", setFilter: setFilter }}
+            props={{ filter: !filter, content: "All", setFilter: setFilter }}
+          />
+          <ContentFilterBtn
+            props={{ filter: filter, content: "My", setFilter: setFilter }}
           />
         </div>
         <div className="flex flex-wrap flex-row gap-10 pb-10">
           {dataList.map((data: IContent) => {
-            return <Card key={data.date} props={data} />;
+            return (
+              <Card
+                key={data.date}
+                props={data}
+              />
+            );
           })}
         </div>
       </main>
