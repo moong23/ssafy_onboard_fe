@@ -19,6 +19,7 @@ const Card = ({ props }: { props: IContent }) => {
           fill={true}
           sizes={"300px"}
           className="pointer-events-none"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAA"
         />
       </div>
       <div className="px-4 py-2">
