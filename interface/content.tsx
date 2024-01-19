@@ -4,4 +4,5 @@ export interface IContent {
   content: string;
   date: string;
   writer: string;
+  id: number;
 }
