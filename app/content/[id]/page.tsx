@@ -2,14 +2,19 @@ import { fetcher } from "@/api/fetcher";
 import { IContent } from "@/interface/content";
 import ContentContainer from "@/components/contentContainer";
 
+interface IContentContainerProps {
+  type: "view" | "create";
+}
+
 const Content = async ({ params }: { params: { id: number } }) => {
   async function getContentById() {
     "use server";
     const { id } = params;
+    console.log("id", id);
     return fetcher
       .get(`/content/${id}`)
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         return res.data;
       })
       .catch((err) => {
@@ -20,7 +25,7 @@ const Content = async ({ params }: { params: { id: number } }) => {
     "use server";
     const { id } = params;
     const res = await fetcher.get(`/content/${id}`);
-    return res;
+    return res.data;
   }
   async function getContentByIDCompare2_fail() {
     "use server";
@@ -43,8 +48,8 @@ const Content = async ({ params }: { params: { id: number } }) => {
 
   return (
     <div className="w-full h-full bg-zinc-500 flex justify-center items-center">
-      <div className="w-[80vw] min-w-[600px] bg-white h-4/5 rounded-3xl flex flex-col p-10">
-        <ContentContainer />
+      <div className="w-[80vw] min-w-[600px] bg-slate-800 h-4/5 rounded-3xl flex flex-col p-10">
+        <ContentContainer props={data} type={"view"} />
       </div>
     </div>
   );
