@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      height: {
+        'topbar': '60px',
+        'mainpage' : 'calc(100% - 60px)'
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
